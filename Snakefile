@@ -79,3 +79,18 @@ rule create_dict:
         f"{RAW}/reference.dict"
     shell:
         "gatk CreateSequenceDictionary -R {input} -O {output}"
+
+
+# Step 7: Align reads with BWA (with read groups)
+rule align_reads:
+    input:
+        ref=f"{RAW}/reference.fasta",
+        fastq=f"{RAW}/{SRA}.fastq",
+        bwt=f"{RAW}/reference.fasta.bwt"
+    output:
+        f"{ALIGNED}/aligned.sam"
+    shell:
+        r"""
+        bwa mem -R '@RG\tID:1\tLB:lib1\tPL:illumina\tPU:unit1\tSM:sample1' {input.ref} {input.fastq} > {output}
+        """
+

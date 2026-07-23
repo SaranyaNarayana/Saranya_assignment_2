@@ -113,3 +113,15 @@ rule validate_bam:
         touch(f"{ALIGNED}/.validated")
     shell:
         "gatk ValidateSamFile -I {input} -MODE SUMMARY"
+
+
+# Step 10: Mark duplicates 
+rule mark_duplicates:
+    input:
+        bam=f"{ALIGNED}/aligned.sorted.bam",
+        check=f"{ALIGNED}/.validated"
+    output:
+        bam=f"{ALIGNED}/dedup.bam",
+        metrics=f"{ALIGNED}/dup_metrics.txt"
+    shell:
+        "gatk MarkDuplicates -I {input.bam} -O {output.bam} -M {output.metrics}"

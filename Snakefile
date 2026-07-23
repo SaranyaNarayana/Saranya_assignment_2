@@ -163,3 +163,10 @@ rule filter_variants:
         gatk VariantFiltration -R {input.ref} -V {input.vcf} -O {output} \
             --filter-expression "QD < 2.0 || FS > 60.0" --filter-name FILTER
         """
+
+# Step 14: Download GenBank record for snpEff 
+rule download_genbank:
+    output:
+        f"{SNPEFF_DATA}/genes.gbk"
+    shell:
+        "efetch -db nucleotide -id {REF_ID} -format genbank > {output}"

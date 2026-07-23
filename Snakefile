@@ -38,3 +38,15 @@ rule download_sra:
         prefetch {params.sra} -O {params.raw}
         fastq-dump -X 10000 {params.raw}/{params.sra}/{params.sra}.sra -O {params.raw}
         """
+
+
+# Step 3: FastQC on raw reads 
+rule fastqc_raw:
+    input:
+        f"{RAW}/{SRA}.fastq"
+    output:
+        f"{QC}/{SRA}_fastqc.html"
+    params:
+        qc=QC
+    shell:
+        "fastqc -o {params.qc} {input}"

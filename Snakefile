@@ -189,3 +189,13 @@ rule create_snpeff_config:
         reference_db.genbank : $(readlink -f {input.gbk})
         EOF
         """
+
+# Step 16: Build snpEff database
+rule build_snpeff_db:
+    input:
+        config=f"{SNPEFF}/snpEff.config",
+        gbk=f"{SNPEFF_DATA}/genes.gbk"
+    output:
+        touch(f"{SNPEFF}/.db_built")
+    shell:
+        "snpEff build -c {input.config} -genbank -v -noCheckProtein reference_db"

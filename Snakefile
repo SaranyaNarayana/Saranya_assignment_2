@@ -69,3 +69,13 @@ rule bwa_index:
         f"{RAW}/reference.fasta.bwt"
     shell:
         "bwa index {input}"
+
+
+# Step 6: Create FASTA sequence dictionary (GATK)
+rule create_dict:
+    input:
+        f"{RAW}/reference.fasta"
+    output:
+        f"{RAW}/reference.dict"
+    shell:
+        "gatk CreateSequenceDictionary -R {input} -O {output}"

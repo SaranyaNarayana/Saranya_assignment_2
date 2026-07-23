@@ -199,3 +199,14 @@ rule build_snpeff_db:
         touch(f"{SNPEFF}/.db_built")
     shell:
         "snpEff build -c {input.config} -genbank -v -noCheckProtein reference_db"
+
+
+# Step 17: Export snpEff database
+rule export_snpeff_db:
+    input:
+        config=f"{SNPEFF}/snpEff.config",
+        built=f"{SNPEFF}/.db_built"
+    output:
+        f"{SNPEFF}/snpEff_reference_db.txt"
+    shell:
+        "snpEff dump -c {input.config} reference_db > {output}"

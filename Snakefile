@@ -135,3 +135,16 @@ rule index_dedup_bam:
         f"{ALIGNED}/dedup.bam.bai"
     shell:
         "samtools index {input}"
+
+# Step 12: Call variants (HaplotypeCaller)
+rule call_variants:
+    input:
+        ref=f"{RAW}/reference.fasta",
+        dict=f"{RAW}/reference.dict",
+        fai=f"{RAW}/reference.fasta.fai",
+        bam=f"{ALIGNED}/dedup.bam",
+        bai=f"{ALIGNED}/dedup.bam.bai"
+    output:
+        f"{VARIANTS}/raw_variants.vcf"
+    shell:
+        "gatk HaplotypeCaller -R {input.ref} -I {input.bam} -O {output}"

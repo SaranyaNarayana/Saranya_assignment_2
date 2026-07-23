@@ -210,3 +210,16 @@ rule export_snpeff_db:
         f"{SNPEFF}/snpEff_reference_db.txt"
     shell:
         "snpEff dump -c {input.config} reference_db > {output}"
+
+
+# Step 18: Annotate variants with snpEff 
+rule annotate_variants:
+    input:
+        config=f"{SNPEFF}/snpEff.config",
+        vcf=f"{VARIANTS}/filtered_variants.vcf",
+        built=f"{SNPEFF}/.db_built"
+    output:
+        vcf=f"{ANNOTATED}/annotated_variants.vcf",
+        html=f"{SNPEFF}/snpEff.html"
+    shell:
+        "snpEff -c {input.config} -stats {output.html} reference_db {input.vcf} > {output.vcf}"

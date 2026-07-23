@@ -170,3 +170,22 @@ rule download_genbank:
         f"{SNPEFF_DATA}/genes.gbk"
     shell:
         "efetch -db nucleotide -id {REF_ID} -format genbank > {output}"
+
+
+
+# Step 15: Create custom snpEff config file 
+rule create_snpeff_config:
+    input:
+        ref=f"{RAW}/reference.fasta",
+        gbk=f"{SNPEFF_DATA}/genes.gbk"
+    output:
+        f"{SNPEFF}/snpEff.config"
+    shell:
+        """
+        cat <<EOF > {output}
+        # Custom snpEff config for reference_db
+        reference_db.genome : reference_db
+        reference_db.fa : $(readlink -f {input.ref})
+        reference_db.genbank : $(readlink -f {input.gbk})
+        EOF
+        """

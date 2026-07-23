@@ -103,3 +103,13 @@ rule sort_bam:
         f"{ALIGNED}/aligned.sorted.bam"
     shell:
         "samtools view -b {input} | samtools sort -o {output}"
+
+
+# Step 9: Validate BAM file
+rule validate_bam:
+    input:
+        f"{ALIGNED}/aligned.sorted.bam"
+    output:
+        touch(f"{ALIGNED}/.validated")
+    shell:
+        "gatk ValidateSamFile -I {input} -MODE SUMMARY"

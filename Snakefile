@@ -60,3 +60,12 @@ rule index_reference_samtools:
         f"{RAW}/reference.fasta.fai"
     shell:
         "samtools faidx {input}"
+
+# Step 5: Build BWA index 
+rule bwa_index:
+    input:
+        f"{RAW}/reference.fasta"
+    output:
+        f"{RAW}/reference.fasta.bwt"
+    shell:
+        "bwa index {input}"

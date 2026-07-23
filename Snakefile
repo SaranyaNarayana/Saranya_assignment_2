@@ -50,3 +50,13 @@ rule fastqc_raw:
         qc=QC
     shell:
         "fastqc -o {params.qc} {input}"
+
+
+# Step 4: Index reference genome 
+rule index_reference_samtools:
+    input:
+        f"{RAW}/reference.fasta"
+    output:
+        f"{RAW}/reference.fasta.fai"
+    shell:
+        "samtools faidx {input}"

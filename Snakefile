@@ -16,8 +16,10 @@ SNPEFF_DATA = f"{SNPEFF}/data/reference_db"
 rule all:
     input:
         f"{ANNOTATED}/annotated_variants.vcf",
-        f"{QC}/{SRA}_fastqc.html"
+        f"{QC}/{SRA}_fastqc.html",
+        f"{RESULTS}/.uploaded"
 
+        
 # Step 1: Download reference genome
 rule download_reference:
     output:
@@ -223,3 +225,17 @@ rule annotate_variants:
         html=f"{SNPEFF}/snpEff.html"
     shell:
         "snpEff -c {input.config} -stats {output.html} reference_db {input.vcf} > {output.vcf}"
+
+
+
+# Step 19: Upload results to S3
+rule upload_to_s3:
+    input:
+        f"{ANNOTATED}/annotated_variants.vcf",
+        f"{QC}/{SRA}_fastqc.html"
+    output:
+        touch(f"{RESULTS}/.uploaded")
+    params:
+        bucket="saranyassignment2"
+    shell:
+        "aws s3 sync {RESULTS}/ s3://{params.bucket}/results/ --exclude '.snakemake/*'"

@@ -24,3 +24,17 @@ rule download_reference:
         f"{RAW}/reference.fasta"
     shell:
         "efetch -db nucleotide -id {REF_ID} -format fasta > {output}"
+
+
+# Step 2: Download sequencing data 
+rule download_sra:
+    output:
+        f"{RAW}/{SRA}.fastq"
+    params:
+        sra=SRA,
+        raw=RAW
+    shell:
+        """
+        prefetch {params.sra} -O {params.raw}
+        fastq-dump -X 10000 {params.raw}/{params.sra}/{params.sra}.sra -O {params.raw}
+        """

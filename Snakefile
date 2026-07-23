@@ -94,3 +94,12 @@ rule align_reads:
         bwa mem -R '@RG\tID:1\tLB:lib1\tPL:illumina\tPU:unit1\tSM:sample1' {input.ref} {input.fastq} > {output}
         """
 
+
+# Step 8: Convert SAM to sorted BAM
+rule sort_bam:
+    input:
+        f"{ALIGNED}/aligned.sam"
+    output:
+        f"{ALIGNED}/aligned.sorted.bam"
+    shell:
+        "samtools view -b {input} | samtools sort -o {output}"

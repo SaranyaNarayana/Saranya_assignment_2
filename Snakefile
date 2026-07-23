@@ -125,3 +125,13 @@ rule mark_duplicates:
         metrics=f"{ALIGNED}/dup_metrics.txt"
     shell:
         "gatk MarkDuplicates -I {input.bam} -O {output.bam} -M {output.metrics}"
+
+
+# Step 11: Index deduplicated BAM
+rule index_dedup_bam:
+    input:
+        f"{ALIGNED}/dedup.bam"
+    output:
+        f"{ALIGNED}/dedup.bam.bai"
+    shell:
+        "samtools index {input}"
